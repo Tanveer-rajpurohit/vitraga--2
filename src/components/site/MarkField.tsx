@@ -58,7 +58,8 @@ export function MarkField({ className, size = 11 }: Props) {
       h = el.clientHeight;
       el.width = Math.round(w * dpr);
       el.height = Math.round(h * dpr);
-      tw = Math.min((w * 0.86) / n, (h * 0.78) / (n / 2 + 3.4));
+      // Sized to fill most of its box; the figure is the hero's centrepiece.
+      tw = Math.min((w * 1.0) / n, (h * 1.0) / (n / 2 + 3.4));
       unit = tw * 0.5;
       ox = w / 2;
       oy = h / 2 - (n * tw) / 4 + unit * 1.6;
