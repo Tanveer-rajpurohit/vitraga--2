@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { HERO } from "@/content/site";
-import { PixelField } from "./PixelField";
+import { MarkField } from "./MarkField";
 import { Scramble } from "./Scramble";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -63,7 +63,7 @@ export function Hero() {
 
       <div className="relative flex-1 overflow-hidden bg-azure text-paper max-md:flex max-md:flex-col">
         <div className="relative h-72 md:absolute md:inset-0 md:h-auto">
-          <PixelField mode="tetris" className="absolute inset-0 size-full" />
+          <MarkField className="absolute inset-0 size-full md:right-[22rem] md:w-auto" />
         </div>
         <div data-side className="grid grid-rows-[auto_1fr] border-paper/70 bg-azure md:absolute md:inset-y-0 md:right-0 md:w-[22rem] md:border-l">
           <div data-side-content className="border-b border-paper/70 p-8">

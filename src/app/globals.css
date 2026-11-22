@@ -10,6 +10,59 @@
   --azure: #0755b5;
   --azure-deep: #054590;
   --azure-soft: #5b8fd0;
+  /* Text on the light ground. Cream theme keeps the reference's blue text. */
+  --ink: #0755b5;
+}
+
+/* White theme: white ground and near-black text; blue sections stay blue. */
+:root[data-theme="white"] {
+  --paper: #ffffff;
+  --paper-2: #f0f2f5;
+  --ink: #10141c;
+}
+:root[data-theme="white"] .theme-swatch-white,
+:root:not([data-theme="white"]) .theme-swatch-cream {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Desktop: Services is pulled up over the hero, so it must start invisible
+   in CSS or its blue covers the hero for a frame before GSAP takes over. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  #services {
+    background-color: transparent;
+  }
+  #services [data-lead],
+  #services [data-stack] {
+    visibility: hidden;
+  }
+  #services [data-list] {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+/* Loading screen, removed by <Loader /> once fonts and first frame are ready. */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--azure);
+  transition: opacity 0.5s ease, visibility 0.5s;
+}
+.loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+.loader [data-arm] {
+  opacity: 0.2;
+  animation: arm 1.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.15s);
+}
+@keyframes arm {
+  50% { opacity: 1; }
 }
 
 @theme inline {
@@ -18,7 +71,7 @@
   --color-azure: var(--azure);
   --color-azure-deep: var(--azure-deep);
   --color-azure-soft: var(--azure-soft);
-  --color-ink: var(--azure);
+  --color-ink: var(--ink);
   --color-line: var(--azure);
 
   --font-sans: var(--font-archivo);
@@ -52,7 +105,8 @@ html::-webkit-scrollbar-thumb {
 body {
   overflow-x: clip;
   background: var(--paper);
-  color: var(--azure);
+  color: var(--ink);
+  transition: background-color 0.3s, color 0.3s;
   font-family: var(--font-archivo), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }

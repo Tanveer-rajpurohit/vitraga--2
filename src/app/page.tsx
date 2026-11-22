@@ -1,7 +1,7 @@
 import { Contact } from "@/components/site/Contact";
 import { Faq } from "@/components/site/Faq";
 import { Header } from "@/components/site/Header";
-import { Journal } from "@/components/site/Journal";
+import { ReviewLoop } from "@/components/site/ReviewLoop";
 import { Hero } from "@/components/site/Hero";
 import { Process } from "@/components/site/Process";
 import { Proof } from "@/components/site/Proof";
@@ -18,7 +18,7 @@ export default function Home() {
         <Services />
         <Process />
         <Proof />
-        <Journal />
+        <ReviewLoop />
         <Work />
         <Faq />
         <Contact />

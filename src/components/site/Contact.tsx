@@ -1,7 +1,7 @@
 import { VitragaIcon } from "@/components/brand/Logo";
 import { NAV, PROJECTS, SERVICES, SITE } from "@/content/site";
 import { CodeWindow } from "./CodeWindow";
-import { PixelField } from "./PixelField";
+import { MarkField } from "./MarkField";
 import { Scramble } from "./Scramble";
 
 const SOCIALS = ["GitHub", "LinkedIn", "Instagram"] as const;
@@ -34,7 +34,7 @@ export function Contact() {
             </div>
           </div>
           <div className="relative min-h-56 flex-1 border-t border-paper/70">
-            <PixelField mode="scatter" className="absolute inset-0 size-full" />
+            <MarkField size={9} className="absolute inset-0 size-full" />
           </div>
         </div>
         <div className="grid md:grid-cols-[1fr_16rem]">
