@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+/*
+ * Palette copied from the reference: cream paper and one deep blue.
+ * Cream on blue and blue on cream are both about 6:1, so body text passes AA.
+ */
+:root {
+  --paper: #f4f2e8;
+  --paper-2: #eae7d9;
+  --azure: #0755b5;
+  --azure-deep: #054590;
+  --azure-soft: #5b8fd0;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-azure: var(--azure);
+  --color-azure-deep: var(--azure-deep);
+  --color-azure-soft: var(--azure-soft);
+  --color-ink: var(--azure);
+  --color-line: var(--azure);
+
+  --font-sans: var(--font-archivo);
+  --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-fira-mono);
+}
+
+html {
+  overflow-x: clip;
+  background: var(--paper);
+  scrollbar-width: thin;
+  scrollbar-color: var(--azure) transparent;
+}
+html::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb {
+  background: var(--azure);
+  border-radius: 999px;
+}
+
+::selection {
+  background: var(--azure);
+  color: var(--paper);
+}
+
+body {
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--azure);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Headline lines slide up from a clipped row when scrolled into view. */
+.reveal {
+  display: block;
+  overflow: hidden;
+}
+.reveal > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0s);
+}
+.reveal.is-in > span {
+  transform: none;
+}
+
+/* Hidden start states for the GSAP reveals in RevealOnScroll. */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+}
+.pop {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-36px);
+}
+.slide-in {
+  transform: translateX(100%);
+}
+.rise {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(28px);
+}
+.line-x {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.line-y {
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.box-body {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+}
+
+/* Start poses for RevealText variants. */
+.rt-lines [data-piece] {
+  transform: translateY(110%);
+}
+.rt-chars [data-piece] {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.45em) rotate(10deg);
+}
+.rt-words [data-piece] {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.7em);
+}
+.rt-flip [data-piece] {
+  opacity: 0;
+  visibility: hidden;
+  transform: rotateX(-90deg);
+  transform-origin: 50% 100%;
+}
+
+/* Dots travel along dotted connectors. */
+@keyframes flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+.flow {
+  animation: flow 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal > span {
+    transform: none;
+    transition: none;
+  }
+  .flow {
+    animation: none;
+  }
+  .wipe,
+  .pop,
+  .slide-in,
+  .rise,
+  .line-x,
+  .line-y,
+  .box-body,
+  [data-edge],
+  [data-piece] {
+    clip-path: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
