@@ -16,9 +16,11 @@
 
 /* White theme: white ground and near-black text; blue sections stay blue. */
 :root[data-theme="white"] {
+  /* Brand blue family, not grey: navy ink derived from the logo blue, a
+     faint blue tint for hover grounds. Navy on white is about 14:1. */
   --paper: #ffffff;
-  --paper-2: #f0f2f5;
-  --ink: #10141c;
+  --paper-2: #eef4fc;
+  --ink: #0a2a57;
 }
 :root[data-theme="white"] .theme-swatch-white,
 :root:not([data-theme="white"]) .theme-swatch-cream {
@@ -50,19 +52,36 @@
   place-items: center;
   background: var(--paper);
   color: var(--azure);
-  transition: opacity 0.5s ease, visibility 0.5s;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.45s, visibility 0s 1.35s;
 }
+/* Exit: the capsules settle into the logo (solid and soft), it scales down,
+   then the screen lifts away top-first like a curtain. */
 .loader.is-done {
-  opacity: 0;
+  clip-path: inset(0 0 100% 0);
   visibility: hidden;
 }
+.loader svg {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease 0.35s;
+}
+.loader.is-done svg {
+  transform: scale(0.6) rotate(45deg);
+  opacity: 0;
+}
 .loader [data-arm] {
-  opacity: 0.2;
-  animation: arm 1.2s ease-in-out infinite;
-  animation-delay: calc(var(--i) * 0.15s);
+  opacity: 0.15;
+  transform-origin: 0 0;
+  animation: arm 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: calc(var(--i) * 0.175s);
+  transition: opacity 0.3s ease;
+}
+.loader.is-done [data-arm] {
+  animation: none;
+  opacity: var(--rest);
 }
 @keyframes arm {
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.15; }
+  40% { opacity: 1; }
 }
 
 @theme inline {

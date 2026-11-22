@@ -2,7 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-type Props = { className?: string; /** Grid cells per side (odd keeps the mark centred). */ size?: number };
+type Props = {
+  className?: string;
+  /** Grid cells per side (odd keeps the mark centred). */
+  size?: number;
+  /** Floor depth as a share of tile width: 0.5 is isometric, lower is a flatter, wider view. */
+  tilt?: number;
+  /** Pillar height per unit as a share of tile width. */
+  lift?: number;
+};
 
 const DIRS: readonly [number, number, boolean][] = [
   [0, -1, false], [1, -1, true], [1, 0, false], [1, 1, true],
@@ -32,7 +40,7 @@ function markHeights(n: number): Float32Array {
  * a slow wave breathes through the floor, and heights ease frame-rate
  * independently. Colours follow the theme through CSS variables.
  */
-export function MarkField({ className, size = 11 }: Props) {
+export function MarkField({ className, size = 11, tilt = 0.5, lift = 0.5 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -58,11 +66,11 @@ export function MarkField({ className, size = 11 }: Props) {
       h = el.clientHeight;
       el.width = Math.round(w * dpr);
       el.height = Math.round(h * dpr);
-      // Sized to fill most of its box; the figure is the hero's centrepiece.
-      tw = Math.min((w * 1.0) / n, (h * 1.0) / (n / 2 + 3.4));
-      unit = tw * 0.5;
+      // Fit the floor diamond plus the tallest pillar inside the box.
+      tw = Math.min((w * 0.98) / n, (h * 0.94) / (n * tilt + 4.2 * lift));
+      unit = tw * lift;
       ox = w / 2;
-      oy = h / 2 - (n * tw) / 4 + unit * 1.6;
+      oy = h / 2 - ((n - 1) * tw * tilt) / 2 + unit * 2;
     };
     resize();
 
@@ -75,7 +83,7 @@ export function MarkField({ className, size = 11 }: Props) {
       const css = getComputedStyle(el);
       const paper = css.getPropertyValue("--paper").trim() || "#f4f2e8";
       const azure = css.getPropertyValue("--azure").trim() || "#0755b5";
-      const th = tw / 2;
+      const th = tw * tilt;
 
       // Pointer position in grid space (floor plane).
       const X = (pointer.x - ox) / (tw / 2);
@@ -160,7 +168,7 @@ export function MarkField({ className, size = 11 }: Props) {
       document.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("resize", resize);
     };
-  }, [size]);
+  }, [size, tilt, lift]);
 
   return <canvas ref={ref} aria-hidden="true" className={className} />;
 }

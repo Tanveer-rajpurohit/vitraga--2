@@ -14,7 +14,8 @@ export function Loader() {
 
   useEffect(() => {
     let cancelled = false;
-    const minShow = new Promise((r) => setTimeout(r, 500));
+    // One full pulse cycle at least, so it never just blinks on and off.
+    const minShow = new Promise((r) => setTimeout(r, 900));
     Promise.all([document.fonts.ready, minShow]).then(() => {
       requestAnimationFrame(() => requestAnimationFrame(() => !cancelled && setIsDone(true)));
     });
@@ -27,7 +28,7 @@ export function Loader() {
     <div aria-hidden="true" className={`loader ${isDone ? "is-done" : ""}`}>
       <svg viewBox="-50 -50 100 100" className="size-16">
         {ARMS.map((deg, i) => (
-          <rect key={deg} data-arm style={{ ["--i" as string]: i }} x={-5} y={-44} width={10} height={24} rx={5} fill="currentColor" transform={`rotate(${deg})`} />
+          <rect key={deg} data-arm style={{ ["--i" as string]: i, ["--rest" as string]: i % 2 ? 0.41 : 1 }} x={-5} y={-44} width={10} height={24} rx={5} fill="currentColor" transform={`rotate(${deg})`} />
         ))}
       </svg>
     </div>

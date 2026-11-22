@@ -33,9 +33,6 @@ export function Contact() {
               <a href={`mailto:${SITE.email}`} className="border border-paper px-5 py-3 text-sm transition-colors hover:bg-paper hover:text-azure">Email us</a>
             </div>
           </div>
-          <div className="relative min-h-56 flex-1 border-t border-paper/70">
-            <MarkField size={9} className="absolute inset-0 size-full" />
-          </div>
         </div>
         <div className="grid md:grid-cols-[1fr_16rem]">
           <div className="wipe p-6 md:p-10 md:pr-0 md:pt-20"><CodeWindow /></div>
@@ -75,7 +72,13 @@ export function Contact() {
             </ul>
           </div>
         </div>
-        <div className="mt-20 flex flex-wrap items-end justify-between gap-6">
+      </footer>
+      {/* Full-bleed sign-off: the mark seen from a low, wide angle. */}
+      <div className="relative h-[22rem] border-t border-paper/70 md:h-[34rem]">
+        <MarkField size={17} tilt={0.24} lift={0.32} className="absolute inset-0 size-full" />
+      </div>
+      <footer className="border-t border-paper/70 px-6 py-8 md:px-24">
+        <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="flex items-center gap-4">
             <VitragaIcon className="size-14 md:size-20" />
             <span className="font-display text-5xl font-light tracking-[0.04em] md:text-7xl">vitraga</span>
