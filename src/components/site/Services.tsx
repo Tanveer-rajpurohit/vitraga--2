@@ -34,6 +34,9 @@ export function Services() {
       // content builds in rather than already being there when the sweep ends.
       gsap
         .timeline({ defaults: { ease: "power3.out" }, scrollTrigger: { trigger: section.current, start: window.matchMedia("(min-width: 768px)").matches ? "top top+=80" : "top 75%", toggleActions: "play none none none", onLeaveBack: (self) => self.animation?.pause(0) } })
+        // Go opaque the instant this section takes over, so the hero scrolling
+        // away underneath (and its border) never shows through.
+        .fromTo(section.current, { backgroundColor: "rgb(255 255 255 / 0)" }, { backgroundColor: "rgb(255 255 255 / 1)", duration: 0.01 }, 0)
         .fromTo(q("[data-heading] [data-piece]"), { yPercent: 110 }, { yPercent: 0, y: 0, duration: 1, ease: "power4.out", stagger: 0.1 }, 0)
         .fromTo(q("[data-lead]"), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 0.2)
         .fromTo(q("[data-list]"), { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1, ease: "power3.inOut" }, 0.3)

@@ -13,6 +13,30 @@ export function Header() {
   const [open, setOpen] = useState<string | null>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const bar = useRef<HTMLElement>(null);
+  const [isOverBlue, setIsOverBlue] = useState(false);
+
+  // Turn the bar blue with white text while a blue band sits right under it.
+  // Re-scan when the hero streams in, since it arrives after this mounts.
+  useEffect(() => {
+    const hits = new Set<Element>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) hits.add(e.target);
+          else hits.delete(e.target);
+        }
+        setIsOverBlue(hits.size > 0);
+      },
+      { rootMargin: `-64px 0px -${Math.max(0, window.innerHeight - 65)}px 0px` },
+    );
+    const scan = () => document.querySelectorAll('[data-theme="blue"]').forEach((el) => io.observe(el));
+    scan();
+    window.addEventListener("vitraga:hero-ready", scan);
+    return () => {
+      io.disconnect();
+      window.removeEventListener("vitraga:hero-ready", scan);
+    };
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(null);
@@ -30,9 +54,9 @@ export function Header() {
   const active: Menu | undefined = MENUS.find((m) => m.label === open);
 
   return (
-    <header ref={bar} onMouseLeave={() => setOpen(null)} className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
+    <header ref={bar} onMouseLeave={() => setOpen(null)} className={`sticky top-0 z-40 border-b transition-colors duration-300 ${isOverBlue ? "border-white/20 bg-band" : "border-line bg-paper/95 backdrop-blur-sm"}`}>
       <nav aria-label="Primary" className="relative mx-auto flex h-16 max-w-[90rem] items-center justify-between px-6 md:px-12">
-        <a href="#top" aria-label="Vitraga home" className="text-ink [&_svg]:text-azure">
+        <a href="#top" aria-label="Vitraga home" className={`transition-colors ${isOverBlue ? "text-white" : "text-ink [&_svg]:text-azure"}`}>
           <VitragaLogo />
         </a>
 
@@ -44,7 +68,7 @@ export function Header() {
                 aria-expanded={open === m.label}
                 onMouseEnter={() => setOpen(m.label)}
                 onClick={() => setOpen(open === m.label ? null : m.label)}
-                className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-[15px] text-ink-2 transition-colors duration-150 hover:bg-paper-2 hover:text-ink ${open === m.label ? "bg-paper-2 text-ink" : ""}`}
+                className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-[15px] transition-colors duration-150 ${isOverBlue ? "text-white hover:bg-white/15" : "text-ink-2 hover:bg-paper-2 hover:text-ink"} ${open === m.label ? (isOverBlue ? "bg-white/15" : "bg-paper-2 text-ink") : ""}`}
               >
                 {m.label}
                 <svg viewBox="0 0 12 12" aria-hidden="true" className={`size-3 transition-transform duration-200 ${open === m.label ? "rotate-45" : ""}`}>
@@ -55,7 +79,7 @@ export function Header() {
           ))}
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
-              <a href={l.href} onMouseEnter={() => setOpen(null)} className="block rounded-lg px-4 py-2 text-[15px] text-ink-2 transition-colors duration-150 hover:bg-paper-2 hover:text-ink">
+              <a href={l.href} onMouseEnter={() => setOpen(null)} className={`block rounded-lg px-4 py-2 text-[15px] transition-colors duration-150 ${isOverBlue ? "text-white hover:bg-white/15" : "text-ink-2 hover:bg-paper-2 hover:text-ink"}`}>
                 {l.label}
               </a>
             </li>
@@ -63,7 +87,7 @@ export function Header() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <a href="#contact" className="rounded-lg bg-azure px-5 py-2.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-azure-deep active:translate-y-px">
+          <a href="#contact" className={`rounded-lg px-5 py-2.5 text-sm font-medium transition-colors duration-150 active:translate-y-px ${isOverBlue ? "bg-white text-band hover:bg-paper-2" : "bg-azure text-white hover:bg-azure-deep"}`}>
             Get in touch
           </a>
           <button
@@ -71,7 +95,7 @@ export function Header() {
             aria-label="Menu"
             aria-expanded={isMobileOpen}
             onClick={() => setIsMobileOpen((v) => !v)}
-            className="grid size-10 place-items-center rounded-lg text-ink transition-colors hover:bg-paper-2 lg:hidden"
+            className={`grid size-10 place-items-center rounded-lg transition-colors lg:hidden ${isOverBlue ? "text-white hover:bg-white/15" : "text-ink hover:bg-paper-2"}`}
           >
             <svg viewBox="0 0 20 20" aria-hidden="true" className="size-5">
               <path d={isMobileOpen ? "M4 4l12 12M16 4L4 16" : "M3 6h14M3 14h14"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />

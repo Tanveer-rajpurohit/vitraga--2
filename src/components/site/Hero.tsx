@@ -3,9 +3,10 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { LOGO_PATH, LOGO_SIZE } from "@/components/brand/Logo";
 import { HERO } from "@/content/site";
+import { MarkField } from "./MarkField";
 import { RevealText } from "./RevealText";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -94,7 +95,7 @@ function HeroSweep() {
   useMarkMotion(root, (q) => {
     gsap.matchMedia().add("(min-width: 768px)", () => {
       gsap
-        .timeline({ scrollTrigger: { trigger: root.current, start: "top top+=64", end: "+=110%", pin: true, scrub: 0.5, invalidateOnRefresh: true } })
+        .timeline({ scrollTrigger: { trigger: root.current, start: "top top+=64", end: "+=110%", pin: true, scrub: 0.5, invalidateOnRefresh: true, refreshPriority: 1 } })
         .to(q("[data-band]"), { height: 0, ease: "power1.inOut", duration: 0.5 }, 0)
         .to(q("[data-side-content]"), { autoAlpha: 0, duration: 0.25 }, 0.1)
         .to(q("[data-layer]"), { y: (i: number) => -i * 22, ease: "power2.inOut", duration: 0.7 }, 0)
@@ -134,6 +135,98 @@ function HeroSweep() {
   );
 }
 
-export function Hero() {
-  return <HeroSweep />;
+type Variant = "logo" | "blocks";
+const VARIANTS: readonly { id: Variant; label: string; href: string }[] = [
+  { id: "logo", label: "A · Logo stack", href: "/" },
+  { id: "blocks", label: "B · Block field", href: "/?hero=blocks" },
+];
+
+/**
+ * B: full-bleed block field. The figure fills the screen, the headline sits
+ * over it in white, and scrolling shrinks the whole hero into a rounded card
+ * that then lifts up and away, as Services builds in underneath.
+ */
+function HeroField() {
+  const root = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const q = gsap.utils.selector(root);
+      gsap.from(q("[data-field-in]"), { y: 28, autoAlpha: 0, stagger: 0.1, duration: 0.9, ease: "power3.out", delay: 0.5 });
+      gsap.matchMedia().add("(min-width: 768px)", () => {
+        // Offset set by GSAP (not a CSS class) so the glide back to centre lands exactly at 0.
+        gsap.set(q("[data-field]"), { xPercent: 16 });
+        gsap
+          .timeline({ scrollTrigger: { trigger: root.current, start: "top top+=64", end: "+=170%", pin: true, scrub: 1.2, refreshPriority: 1 } })
+          .to(q("[data-field-copy]"), { y: -40, autoAlpha: 0, duration: 0.3 }, 0)
+          // The figure glides to the centre of the card as the copy leaves.
+          .to(q("[data-field]"), { xPercent: 0, ease: "power2.inOut", duration: 0.5 }, 0.05)
+          .to(q("[data-scrim]"), { autoAlpha: 0, duration: 0.3 }, 0.05)
+          .fromTo(q("[data-frame]"), { clipPath: "inset(0% 0% 0% 0% round 0px)" }, { clipPath: "inset(10% 14% 10% 14% round 28px)", ease: "power2.inOut", duration: 0.7 }, 0.1)
+          .to({}, { duration: 0.15 })
+          .to(q("[data-frame]"), { yPercent: -110, ease: "power1.inOut", duration: 0.6 });
+      });
+    },
+    { scope: root },
+  );
+
+  return (
+    <section ref={root} id="top" className="relative md:h-[calc(100svh-4rem)]">
+      <div data-frame data-theme="blue" className="relative h-[calc(100svh-4rem)] overflow-hidden bg-band text-white">
+        <div data-field className="absolute inset-0"><MarkField size={13} className="absolute inset-0 size-full" /></div>
+        {/* Band-coloured scrim under the copy so the headline never sits on bare figure lines. */}
+        <div data-scrim aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--band)_0%,var(--band)_28%,rgb(26_106_232/0)_62%),linear-gradient(to_top,var(--band)_0%,rgb(26_106_232/0)_45%)]" />
+        <div data-field-copy className="relative flex h-full flex-col justify-between p-6 md:p-12">
+          <ul data-field-in className="flex flex-wrap gap-2">
+            {["Senior-led", "AI-assisted", "Human-reviewed"].map((t) => (
+              <li key={t} className="rounded-full border border-white/40 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em]">{t}</li>
+            ))}
+          </ul>
+          <div className="grid items-end gap-8 md:grid-cols-[1.4fr_1fr]">
+            <h1 className="font-display text-[clamp(2.5rem,5.6vw,5.25rem)] font-light leading-[1.02] tracking-[-0.03em]">
+              <RevealText variant="lines" delay={0.4} lines={["Production software,", "at 10x speed."]} />
+            </h1>
+            <div data-field-in className="rounded-2xl bg-white p-6 text-ink md:justify-self-end md:max-w-sm">
+              <p className="text-sm leading-relaxed text-ink-3">{HERO.lead}</p>
+              <a href="#contact" className="mt-5 inline-block rounded-lg bg-azure px-5 py-3 text-sm font-medium text-white transition-colors duration-150 hover:bg-azure-deep">
+                {HERO.cta}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Two hero options for the team to compare. Switching is a full page load
+ * (the choice lives in the URL), so every scroll trigger is measured fresh.
+ * Remove the switch once one is chosen.
+ */
+export function Hero({ variant }: { variant: Variant }) {
+  // The hero streams in after the sections below have created their triggers,
+  // so re-measure them once its pin exists.
+  useEffect(() => {
+    ScrollTrigger.refresh();
+    window.dispatchEvent(new Event("vitraga:hero-ready"));
+  }, []);
+
+  return (
+    <>
+      {variant === "logo" ? <HeroSweep /> : <HeroField />}
+      <div role="group" aria-label="Hero option" className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 gap-1 rounded-xl border border-line bg-paper p-1 shadow-[0_12px_32px_-12px_rgb(13_24_40/0.3)]">
+        {VARIANTS.map((v) => (
+          <a
+            key={v.id}
+            href={v.href}
+            aria-current={variant === v.id ? "page" : undefined}
+            className={`rounded-lg px-4 py-2 font-mono text-xs transition-colors duration-150 ${variant === v.id ? "bg-ink text-white" : "text-ink-2 hover:bg-paper-2"}`}
+          >
+            {v.label}
+          </a>
+        ))}
+      </div>
+    </>
+  );
 }
