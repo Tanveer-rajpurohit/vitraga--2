@@ -17,11 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${archivo.variable} ${fira.variable}`}>
-      <head>
-        {/* Applies the saved theme before paint so there is no flash. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("vitraga-theme");if(t==="white")document.documentElement.dataset.theme=t}catch(e){}` }} />
-      </head>
+    <html lang="en" className={`${spaceGrotesk.variable} ${archivo.variable} ${fira.variable}`}>
       <body>
         <Loader />
         <SmoothScroll>{children}</SmoothScroll>

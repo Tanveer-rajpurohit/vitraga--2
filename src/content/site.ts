@@ -6,13 +6,67 @@ export const SITE = {
   name: "Vitraga",
   // Placeholder address until the real inbox is confirmed.
   email: "hello@vitraga.com",
-  // Placeholder until the studio GitHub organisation is confirmed.
-  github: "https://github.com/Tanveer-rajpurohit",
+  linkedin: "https://www.linkedin.com/company/vitraga",
+  // Placeholder until the studio X account is confirmed.
+  x: "https://x.com/vitraga",
   year: 2026,
 } as const;
 
 export const NAV = [
   { href: "#services", label: "Services" },
+  { href: "#process", label: "Process" },
+  { href: "#work", label: "Work" },
+  { href: "#faq", label: "FAQ" },
+] as const;
+
+type MenuItem = { name: string; note: string; href: string };
+export type Menu = { label: string; href: string; groups: readonly { title: string; items: readonly MenuItem[] }[] };
+
+/** Mega menus in the header. Every item links to a section on this page for now. */
+export const MENUS: readonly Menu[] = [
+  {
+    label: "Services",
+    href: "#services",
+    groups: [
+      { title: "Build", items: [
+        { name: "Web platforms", note: "SaaS products and portals, typed and tested", href: "#services" },
+        { name: "MVP development", note: "Prove the idea in weeks, not quarters", href: "#services" },
+        { name: "Mobile apps", note: "Cross-platform on a shared backend", href: "#services" },
+        { name: "Legacy modernisation", note: "Old stacks moved to a maintainable one", href: "#services" },
+      ] },
+      { title: "AI and data", items: [
+        { name: "AI agents", note: "Agents connected to your tools and documents", href: "#services" },
+        { name: "LLM integration", note: "Search, extraction and RAG inside your product", href: "#services" },
+        { name: "Dashboards", note: "Metrics your team actually opens", href: "#services" },
+      ] },
+      { title: "Run and scale", items: [
+        { name: "Cloud and DevOps", note: "Deploys, monitoring and rollbacks", href: "#services" },
+        { name: "QA automation", note: "End-to-end and load tests in CI", href: "#services" },
+        { name: "Dedicated team", note: "Senior engineers on your roadmap", href: "#contact" },
+      ] },
+    ],
+  },
+  {
+    label: "Industries",
+    href: "#work",
+    groups: [
+      { title: "Regulated", items: [
+        { name: "Healthcare", note: "Clinical and patient software", href: "#work" },
+        { name: "Fintech", note: "Payments, lending and reporting", href: "#work" },
+      ] },
+      { title: "Product and commerce", items: [
+        { name: "SaaS", note: "Multi-tenant platforms", href: "#work" },
+        { name: "Education", note: "Learning platforms and tools", href: "#work" },
+      ] },
+      { title: "Operations", items: [
+        { name: "Travel", note: "Booking and itinerary systems", href: "#work" },
+        { name: "Logistics", note: "Tracking, routing and dispatch", href: "#work" },
+      ] },
+    ],
+  },
+];
+
+export const NAV_LINKS = [
   { href: "#process", label: "Process" },
   { href: "#work", label: "Work" },
   { href: "#faq", label: "FAQ" },
