@@ -137,8 +137,8 @@ function HeroSweep() {
 
 type Variant = "logo" | "blocks";
 const VARIANTS: readonly { id: Variant; label: string; href: string }[] = [
-  { id: "logo", label: "A · Logo stack", href: "/" },
-  { id: "blocks", label: "B · Block field", href: "/?hero=blocks" },
+  { id: "blocks", label: "A · Block field", href: "/" },
+  { id: "logo", label: "B · Logo stack", href: "/?hero=logo" },
 ];
 
 /**

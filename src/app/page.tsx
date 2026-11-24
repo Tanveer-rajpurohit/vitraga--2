@@ -15,7 +15,7 @@ type Props = { searchParams: Promise<{ hero?: string }> };
 /** Reads the hero option from the URL; the only request-time part of the page. */
 async function HeroSlot({ searchParams }: Props) {
   const { hero } = await searchParams;
-  return <Hero variant={hero === "blocks" ? "blocks" : "logo"} />;
+  return <Hero variant={hero === "logo" ? "logo" : "blocks"} />;
 }
 
 export default function Home({ searchParams }: Props) {
