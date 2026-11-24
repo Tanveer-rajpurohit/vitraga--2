@@ -5,35 +5,34 @@
  * Cream on blue and blue on cream are both about 6:1, so body text passes AA.
  */
 :root {
-  --paper: #f4f2e8;
-  --paper-2: #eae7d9;
-  --azure: #0755b5;
-  --azure-deep: #054590;
-  --azure-soft: #5b8fd0;
-  /* Text on the light ground. Cream theme keeps the reference's blue text. */
-  --ink: #0755b5;
-}
-
-/* White theme: white ground and near-black text; blue sections stay blue. */
-:root[data-theme="white"] {
-  /* Brand blue family, not grey: navy ink derived from the logo blue, a
-     faint blue tint for hover grounds. Navy on white is about 14:1. */
+  /* v3 brand palette. White ground, one bright blue, three text weights. */
   --paper: #ffffff;
-  --paper-2: #eef4fc;
-  --ink: #0a2a57;
-}
-:root[data-theme="white"] .theme-swatch-white,
-:root:not([data-theme="white"]) .theme-swatch-cream {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+  --paper-2: #f2f7ff;
+  --azure: #2b7fff;
+  --azure-deep: #1a66e8;
+  --azure-soft: #a9c9ff;
+  /* Blue bands carry small white text; #2b7fff is only 3.8:1 with white, so
+     bands use this deeper shade of it (about 4.9:1). */
+  --band: #1a6ae8;
+  --ink: #0d1828;
+  --ink-2: #262626;
+  --ink-3: #525252;
+  --line: #dfe5ee;
 }
 
-/* Desktop: Services is pulled up over the hero, so it must start invisible
-   in CSS or its blue covers the hero for a frame before GSAP takes over. */
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  #services {
-    background-color: transparent;
+@layer base {
+  /* Body copy on light sections is the lightest text tone; utilities override. */
+  :where(main section:not([data-theme="blue"])) p {
+    color: var(--ink-3);
   }
+  :where(main section:not([data-theme="blue"])) h3 {
+    color: var(--ink-2);
+  }
+}
+
+/* Services sits under the end of the hero sweep on desktop; its content stays
+   hidden until the sweep closes, then GSAP plays it in. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   #services [data-lead],
   #services [data-stack] {
     visibility: hidden;
@@ -68,21 +67,16 @@
   transform: scale(0.6) rotate(45deg);
   opacity: 0;
 }
-.loader [data-arm] {
-  opacity: 0.15;
-  transform-origin: 0 0;
-  animation: arm 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-  animation-delay: calc(var(--i) * 0.175s);
-  transition: opacity 0.3s ease;
+.loader-mark {
+  animation: spin 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
-.loader.is-done [data-arm] {
-  animation: none;
-  opacity: var(--rest);
+.loader.is-done .loader-mark {
+  animation-play-state: paused;
 }
-@keyframes arm {
-  0%, 100% { opacity: 0.15; }
-  40% { opacity: 1; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
+
 
 @theme inline {
   --color-paper: var(--paper);
@@ -91,7 +85,10 @@
   --color-azure-deep: var(--azure-deep);
   --color-azure-soft: var(--azure-soft);
   --color-ink: var(--ink);
-  --color-line: var(--azure);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-band: var(--band);
+  --color-line: var(--line);
 
   --font-sans: var(--font-archivo);
   --font-display: var(--font-space-grotesk);
@@ -250,4 +247,9 @@ html.lenis body {
   *::after {
     transition-duration: 0.01ms !important;
   }
+}
+
+@keyframes stage-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }

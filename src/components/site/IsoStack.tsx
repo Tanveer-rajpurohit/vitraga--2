@@ -16,7 +16,7 @@ const ISO = "matrix(0.866 0.5 -0.866 0.5 0 0)";
 
 function Glyph({ index }: { index: number }) {
   return (
-    <g transform={`${ISO} scale(0.62)`} fill="none" stroke="#0755b5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <g transform={`${ISO} scale(0.62)`} fill="none" stroke="#2b7fff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       {index === 0 && (
         <>
           <rect x={-140} y={-60} width={90} height={50} rx={6} />
@@ -56,7 +56,7 @@ function Glyph({ index }: { index: number }) {
           <path d="M-120 60C-60 60 -80 -60 0 -40S60 80 120 -60" />
           <path d="M-120 60L-40 -90M120 -60L40 70M-60 -20L60 -10" strokeWidth={1.4} />
           {[[-120, 60], [-40, -90], [120, -60], [40, 70], [-60, -20], [60, -10], [0, -15]].map(([x, y]) => (
-            <circle key={`${x}${y}`} cx={x} cy={y} r={7} fill="#f4f2e8" />
+            <circle key={`${x}${y}`} cx={x} cy={y} r={7} fill="#ffffff" />
           ))}
         </>
       )}
@@ -75,7 +75,7 @@ const slabPaths = (
 /**
  * One slab per service. Slab `active` is the solid top; each step, the new slab
  * slides in from the right to the top position while the ones already placed
- * drop one layer and turn into cream outlines. Scrolling back reverses it.
+ * drop one layer and turn into light blue outlines. Scrolling back reverses it.
  */
 export function IsoStack({ active, count }: { active: number; count: number }) {
   const root = useRef<SVGSVGElement>(null);
@@ -109,9 +109,9 @@ export function IsoStack({ active, count }: { active: number; count: number }) {
     <svg ref={root} viewBox="-270 -180 540 560" role="img" aria-label="Isometric stack of layers" className="w-full max-w-[34rem] overflow-visible">
       {Array.from({ length: count }, (_, j) => (
         <g key={j} data-slab={j} style={{ visibility: j === 0 ? "visible" : "hidden" }}>
-          <g data-outline fill="none" stroke="#f4f2e8" strokeWidth={1.5} strokeLinejoin="round" opacity={0}>{slabPaths}</g>
+          <g data-outline fill="none" stroke="#a9c9ff" strokeWidth={1.5} strokeLinejoin="round" opacity={0}>{slabPaths}</g>
           <g data-solid>
-            <g fill="#f4f2e8" stroke="#0755b5" strokeWidth={1.5} strokeLinejoin="round">{slabPaths}</g>
+            <g fill="#ffffff" stroke="#2b7fff" strokeWidth={1.5} strokeLinejoin="round">{slabPaths}</g>
             <Glyph index={j} />
           </g>
         </g>

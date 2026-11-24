@@ -81,8 +81,8 @@ export function MarkField({ className, size = 11, tilt = 0.5, lift = 0.5 }: Prop
       last = now;
       const t = now / 1000;
       const css = getComputedStyle(el);
-      const paper = css.getPropertyValue("--paper").trim() || "#f4f2e8";
-      const azure = css.getPropertyValue("--azure").trim() || "#0755b5";
+      const paper = css.getPropertyValue("--paper").trim() || "#ffffff";
+      const azure = css.getPropertyValue("--band").trim() || "#1a6ae8";
       const th = tw * tilt;
 
       // Pointer position in grid space (floor plane).
